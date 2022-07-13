@@ -11,7 +11,14 @@ class MethodChannelHandsOnFlutterPlugin extends HandsOnFlutterPluginPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
+  }
+
+  Future<double?> getBarometer() async {
+    final barometerValue =
+        await methodChannel.invokeMethod<double>("getBarometer");
+    return barometerValue;
   }
 }

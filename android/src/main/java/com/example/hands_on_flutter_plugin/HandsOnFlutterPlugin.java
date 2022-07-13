@@ -26,7 +26,11 @@ public class  HandsOnFlutterPlugin implements FlutterPlugin, MethodCallHandler {
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     if (call.method.equals("getPlatformVersion")) {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
-    } else {
+    }
+    else if(call.method.equals("getBarometer")){
+      result.success(444.0);
+    }
+    else {
       result.notImplemented();
     }
   }
