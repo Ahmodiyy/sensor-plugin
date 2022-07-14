@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:hands_on_flutter_plugin/hands_on_flutter_plugin.dart';
 import 'package:hands_on_flutter_plugin/hands_on_flutter_plugin_method_channel.dart';
 
 void main() {
@@ -17,9 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
   double _barometerReadings = 0;
-  final _handsOnFlutterPlugin = HandsOnFlutterPlugin();
   final _barometer = MethodChannelHandsOnFlutterPlugin();
 
   @override
@@ -30,16 +27,12 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
     double barometerValue;
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion = await _handsOnFlutterPlugin.getPlatformVersion() ??
-          'Unknown platform version';
       barometerValue = await _barometer.getBarometer() ?? 0;
     } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
       barometerValue = 0;
     }
 

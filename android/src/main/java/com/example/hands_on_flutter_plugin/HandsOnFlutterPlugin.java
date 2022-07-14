@@ -25,7 +25,7 @@ public class  HandsOnFlutterPlugin implements FlutterPlugin, MethodCallHandler, 
   private SensorManager sensorManager;
   private Sensor sensor;
   private FlutterPluginBinding flutterPluginBinding;
-  
+  private double barometerReading;
 
   HandsOnFlutterPlugin(FlutterPluginBinding flutterPluginBinding){
     this.flutterPluginBinding = flutterPluginBinding;
@@ -37,6 +37,11 @@ public class  HandsOnFlutterPlugin implements FlutterPlugin, MethodCallHandler, 
     sensorManager.registerListener(this, sensor,SensorManager.SENSOR_DELAY_NORMAL);
     return  true;
   }
+
+  double getBarometerReading(){
+    return barometerReading;
+  }
+
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "hands_on_flutter_plugin");
@@ -50,7 +55,10 @@ public class  HandsOnFlutterPlugin implements FlutterPlugin, MethodCallHandler, 
       result.success("Android " + android.os.Build.VERSION.RELEASE);
     }
     else if(call.method.equals("getBarometer")){
-      result.success(444.0);
+      result.success(getBarometerReading());
+    }
+    else if(call.method.equals("initializeBarometer")){
+      result.success(initializeBarometer());
     }
     else {
       result.notImplemented();

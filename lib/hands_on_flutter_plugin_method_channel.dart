@@ -16,6 +16,12 @@ class MethodChannelHandsOnFlutterPlugin extends HandsOnFlutterPluginPlatform {
     return version;
   }
 
+  Future<bool?> initializeBarometer() async {
+    final barometer =
+        await methodChannel.invokeMethod<bool>("initializeBarometer");
+    return barometer;
+  }
+
   Future<double?> getBarometer() async {
     final barometerValue =
         await methodChannel.invokeMethod<double>("getBarometer");
