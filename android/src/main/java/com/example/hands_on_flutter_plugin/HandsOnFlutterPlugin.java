@@ -44,7 +44,7 @@ public class  HandsOnFlutterPlugin implements FlutterPlugin, MethodCallHandler {
   }
 
   double getBarometer(){
-    return barometerReading[1];
+    return barometerReading[0];
   }
 
   @Override
