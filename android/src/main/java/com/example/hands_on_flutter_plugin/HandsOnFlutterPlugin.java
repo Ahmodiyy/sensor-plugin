@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
@@ -57,17 +56,19 @@ public class  HandsOnFlutterPlugin implements FlutterPlugin, MethodCallHandler, 
   @RequiresApi(api = Build.VERSION_CODES.N)
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    if (call.method.equals("getPlatformVersion")) {
-      result.success("Android " + android.os.Build.VERSION.RELEASE);
-    }
-    else if(call.method.equals("getBarometer")){
-      result.success(getBarometer());
-    }
-    else if(call.method.equals("initializeBarometer")){
-      result.success(initializeBarometer());
-    }
-    else {
-      result.notImplemented();
+    switch (call.method) {
+      case "getPlatformVersion":
+        result.success("Android " + Build.VERSION.RELEASE);
+        break;
+      case "getBarometer":
+        result.success(getBarometer());
+        break;
+      case "initializeBarometer":
+        result.success(initializeBarometer());
+        break;
+      default:
+        result.notImplemented();
+        break;
     }
   }
 
