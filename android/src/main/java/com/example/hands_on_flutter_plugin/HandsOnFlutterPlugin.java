@@ -6,10 +6,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
@@ -18,33 +21,30 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
 /** HandsOnFlutterPlugin */
-public class  HandsOnFlutterPlugin implements FlutterPlugin, MethodCallHandler {
+public class  HandsOnFlutterPlugin implements FlutterPlugin, MethodCallHandler, SensorEventListener {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private MethodChannel channel;
-  private SensorManager sensorManager;
   private FlutterPluginBinding flutterPluginBinding;
-  private float[] barometerReading;
+  private float barometerReading;
 
-  SensorEventListener sensorEventListener = new SensorEventListener(){
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
-    public void onSensorChanged(SensorEvent event) {
-       barometerReading = event.values;
-    }
-  };
 
+
+  @RequiresApi(api = Build.VERSION_CODES.N)
   boolean initializeBarometer(){
-    sensorManager =  (SensorManager)flutterPluginBinding.getApplicationContext().getSystemService(SENSOR_SERVICE);
-    sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-    List list = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
-    sensorManager.registerListener(sensorEventListener, (Sensor) list.get(0), SensorManager.SENSOR_DELAY_NORMAL);
-    return  true;
+    SensorManager sensorManager = (SensorManager) flutterPluginBinding.getApplicationContext().getSystemService(SENSOR_SERVICE);
+    if(sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+      List<Sensor> list = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
+      sensorManager.registerListener(this, list.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+      return true;
+    }
+    return false;
   }
 
   double getBarometer(){
-    return barometerReading[0];
+    return barometerReading;
   }
 
   @Override
@@ -54,6 +54,7 @@ public class  HandsOnFlutterPlugin implements FlutterPlugin, MethodCallHandler {
     this.flutterPluginBinding = flutterPluginBinding;
   }
 
+  @RequiresApi(api = Build.VERSION_CODES.N)
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     if (call.method.equals("getPlatformVersion")) {
@@ -73,5 +74,15 @@ public class  HandsOnFlutterPlugin implements FlutterPlugin, MethodCallHandler {
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
+  }
+
+  @Override
+  public void onSensorChanged(SensorEvent sensorEvent) {
+    barometerReading = sensorEvent.values[0];
+  }
+
+  @Override
+  public void onAccuracyChanged(Sensor sensor, int i) {
+
   }
 }
