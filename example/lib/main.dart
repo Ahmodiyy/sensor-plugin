@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('your barometer reading is: $_barometerReadings\n'),
+          child: Text('device acceleration : $_barometerReadings m/s\u00B2'),
         ),
       ),
     );
